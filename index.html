@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Animais</title>
+</head>
+<body>
+    <h1>Animais Cadastrados</h1>
+    <ul id="animal-list"></ul>
+    <button id="cadastrar-animal">Cadastrar Animal</button>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+    <script>
+        const API_URL = 'https://6724d3eac39fedae05b2e551.mockapi.io/usuario/Animal';
+
+        // Função para carregar os animais do MockAPI
+        async function carregarAnimais() {
+            try {
+                const resposta = await axios.get(API_URL);
+                const lista = document.getElementById("animal-list");
+                lista.innerHTML = ''; // Limpa a lista antes de popular
+                resposta.data.forEach(animal => {
+                    const item = document.createElement("li");
+                    item.textContent = `${animal.id} - ${animal.nome} (${animal.idade} anos) – ${animal.raca}`;
+                    lista.appendChild(item);
+                });
+            } catch (erro) {
+                console.error("Erro ao carregar a lista de animais:", erro);
+            }
+        }
+
+        // Função para cadastrar um animal "Hardcoded"
+        async function cadastrarAnimal() {
+            const animal = {
+                nome: "Tisto",
+                idade: 6,
+                raca: "gato"
+            };
+            try {
+                await axios.post(API_URL, animal);
+                carregarAnimais(); // Atualiza a lista após cadastrar
+            } catch (erro) {
+                console.error("Erro ao cadastrar o animal:", erro);
+            }
+        }
+
+        // Carrega os animais ao carregar a página
+        window.onload = carregarAnimais;
+
+        // Evento do botão para cadastrar um novo animal
+        document.getElementById("cadastrar-animal").addEventListener("click", cadastrarAnimal);
+    </script>
+</body>
+</html>
